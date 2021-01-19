@@ -3,6 +3,8 @@
 #include <Windows.h>
 #include "io.h"
 #include "problem.h"
+#include <vector>
+#include"stdafx.h"
 using namespace std;
 int partion(double  b[], int low, int high);
 void quicksort(double b[], int low, int high);
@@ -235,4 +237,213 @@ void TheBeatyOfTheProgramming1_1()
 }
 
 
-void 
+bool duplicate(int numbers[], int length, int* duplication) {
+
+	if (numbers == NULL || length <= 0)
+	{
+		return false;
+	}
+
+	for (int i = 0; i < length; i++)
+	{
+		if (numbers[i] >= length || numbers[i] < 0)
+		{
+			return false;
+		}
+	}
+	for (int i = 0; i < length; i++)
+	{
+		while (numbers[i] != i)
+		{
+			if (numbers[i] == numbers[numbers[i]])
+			{
+				//cout << numbers[i] << endl;
+				*duplication = numbers[i];
+				//cout << *duplication << endl;
+				return true;
+			}
+			//swap
+			int temp;
+			temp = numbers[i];
+			numbers[i] = numbers[temp];
+			numbers[temp] = temp;
+		}
+	}
+	return false;
+}
+
+
+
+/**************************************************
+@brief   :菲波那切数列递归求值
+@idea   :
+@parameter   :
+@author  : zhiqiang
+@input   ：
+@output  ：
+@time    :
+**************************************************/
+
+long Fibonacci(unsigned int n)
+{
+	if (n <= 0)
+		return 0;
+	if (n == 1)
+		return 1;
+	int k = n;
+	return Fibonacci(n - 1) + Fibonacci(n - 2);
+}
+
+
+long Fibonacci_improvement(unsigned int n)
+{
+	int f1 = 0;
+	int f2 = 1;
+	for (int i = 2; i <= n; i++)
+	{
+		int temp = f1 + f2;
+		f1 = f2;
+		f2 = temp;
+	}
+	return f2;
+
+}
+
+
+
+
+/**************************************************
+@brief   :面试题12：矩阵中的路径
+@idea   :
+@parameter   :
+@author  : zhiqiang
+@input   ：
+@output  ：
+@time    :
+**************************************************/
+
+bool solu(char* matrix, int rows, int cols, char* str, int row, int col, int index, int* visited)
+{
+	if (row < 0 || col<0 || index < 0 || row >= rows || col >= cols || index >= strlen(str))//index<=不能加等号
+		return false;
+	bool k = 0;
+//	if (visited[index] == '/0')
+//		return 1;
+	int len = strlen(str)-1;
+	//cout << "长度" << len << endl;
+	cout << "matrix:" << matrix[row * cols + col] <<":"<<row<<":"<<col<<":"<<index<<":"<< endl;
+	cout << "str:" << str[index] <<":"<<len<< endl;
+	if (index == len) return 1;
+	if (row - 1 >= 0 && visited[(row - 1) * cols + col] != 1 && matrix[(row - 1) * cols + col] == str[index])//查看上方
+	{
+		
+		if (index == len) return 1;
+		visited[(row - 1) * cols + col] = 1;//访问过，标记一下
+		k = solu(matrix, rows, cols, str, row - 1, col, index + 1, visited);
+		if (k == 1) return k;//如果找到就不用再往下遍历了
+		visited[(row - 1) * cols + col] = 0;//递归回来，还原一下
+	}
+	if (row + 1 < rows && visited[(row + 1) * cols + col] != 1 && matrix[(row + 1) * cols + col] == str[index])//查看下方
+	{
+		if (index == len) return 1;
+		visited[(row + 1) * cols + col] = 1;
+		k = solu(matrix, rows, cols, str, row + 1, col, index + 1, visited);
+		if (k == 1) return k;//如果找到就不用再往下遍历了
+		visited[(row + 1) * cols + col] = 0;
+	}
+	if (col - 1 >= 0 && visited[row * cols + col - 1] != 1 && matrix[row * cols + col - 1] == str[index])//查看左方
+	{
+		if (index == len) return 1;
+		visited[row * cols + col - 1] = 1;//访问过，标记一下
+		k = solu(matrix, rows, cols, str, row, col - 1, index + 1, visited);
+		if (k == 1) return k;//如果找到就不用再往下遍历了
+		visited[row * cols + col - 1] = 0;//递归回来，还原一下
+	}
+	if (col + 1 <= cols && visited[row * cols + col + 1] != 1 && matrix[row * cols + col + 1] == str[index])//查看右方
+	{
+		if (index == len) return 1;
+		visited[row * cols + col + 1] = 1;//访问过，标记一下
+		k = solu(matrix, rows, cols, str, row, col + 1, index + 1, visited);
+		if (k == 1) return k;//如果找到就不用再往下遍历了
+		visited[row * cols + col + 1] = 0;//递归回来，还原一下
+	}
+
+	return k;
+}
+
+
+bool hasPath(char* matrix, int rows, int cols, char* str)
+{
+	bool k = false;
+	int row, col;//保存目前矩阵遍历的位置
+	int index = 0;//保存数组中遍历位置
+	int* visited = new int(rows * cols);
+	for (int i = 0; i < rows; i++)
+	{
+		for (int j = 0; j < cols; j++)
+		{
+			visited[i * cols + j] = int(0);
+		}
+	}
+	if (rows == 0 || cols == 0 || str == nullptr)  //考虑例外
+		return false;
+	for (row = 0; row < rows; row++)
+	{
+		for (col = 0; col < cols; col++)
+		{
+			if (matrix[row * cols + col] == str[0])
+			{
+				cout << "m1" << matrix[row * cols + col] << endl;
+				cout << "s1" << str[0] << endl;
+				visited[row * cols + col] = 1;
+				k= solu(matrix, rows, cols, str, row, col, index+1, visited);  //不能直接用return xxx
+				if (k == 1)return k;
+				visited[row * cols + col] = 0;
+			}
+
+		}
+
+	}
+	return k;
+
+}
+
+
+
+/**************************************************
+@brief   :面试题16：数值的整数次方
+@idea   :
+@parameter   :
+@author  : zhiqiang
+@input   ：
+@output  ：
+@time    :
+**************************************************/
+double PowerwithUnsignedExponent(double base, unsigned int exponentTemp)
+{
+	if (exponentTemp == 0)
+		return 1;
+	if (exponentTemp == 1)
+		return base;
+	double result = PowerwithUnsignedExponent(base, exponentTemp >> 1);
+	result *= result;
+	if (exponentTemp & 0x1 == 1)  //用位运算判断奇偶
+		result *= base;
+	return result;
+}
+double Power(double base, int exponent) {
+	double dis = 1e-6;
+	if (abs(base - 0.0) < dis && exponent <= 0)  //发生错误，注意利用差来判断浮点数的相等
+		return 0;
+	unsigned int exponentTemp = exponent;
+	if (exponent < 0)
+	{
+		exponentTemp = -exponent;
+	}
+	double result = PowerwithUnsignedExponent(base, exponentTemp);
+	if (exponent < 0)
+		result = 1.0 / result;
+	return result;
+
+
+}
