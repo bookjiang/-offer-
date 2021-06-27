@@ -78,13 +78,14 @@ int main()
 	//cout << "n" << n << endl;
 
 
-	string a = "abcd";
-	for (int i = 0; i < a.length(); i++)
-		cout << a[i] << "\n" << endl;
+	//string a = "abcd";
+	//for (int i = 0; i < a.length(); i++)
+	//	cout << a[i] << "\n" << endl;
 
-
-
-
+	int num[6] = { 1,7, 3, 6, 5, 6 };
+	vector<int> nums(num, num + 6);
+	int result = pivotIndex(nums);
+	cout << result << endl;
 	//system("pause");
 	getchar();
 	return 0;

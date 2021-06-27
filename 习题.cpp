@@ -75,10 +75,11 @@ int partion(double  b[], int low, int high)
 
 
 
-int max = 0;
+
 //1.6子递归程序
-double  pro1_6_1(int k)
+double  pro1_6_1(int k,int max)
 {
+	//int max = 0;
 	/*cout <<"k  "<< k << endl;
 	cout <<"max  "<< max << endl;*/
 	if (k > max)
@@ -88,7 +89,7 @@ double  pro1_6_1(int k)
 	k++;
 	double  n1 = (double)((double)(k - 1) / (double)(2 * (k - 1) + 1));//注意整数运算默认结果为整数，故需要强制转化为浮点数
 	//cout << "n1" << n1 << endl;
-	double n = (double)(2 + n1 * (double)pro1_6_1(k));
+	double n = (double)(2 + n1 * (double)pro1_6_1(k,max));
 	//cout << "n" << n << endl;
 	return  n;
 }
@@ -104,10 +105,11 @@ double  pro1_6_1(int k)
 **************************************************/
 void problem1_6()
 {
+	int max=0;
 	cout << "请输入公式结束的k值";
 	cin >> max;
 	int k = 1;
-	double value = pro1_6_1(k);
+	double value = pro1_6_1(k,max);
 	cout << "π约为" << value << endl;
 
 }
@@ -447,3 +449,31 @@ double Power(double base, int exponent) {
 
 
 }
+
+
+
+//leetcode 寻找数组的中心索引
+int pivotIndex(vector<int>& nums)
+{
+	int leftSum=0, rightSum=0;
+	for (int i = 1; i < nums.size(); i++)
+	{
+		leftSum += nums[i];
+	}
+	for (int i = 0; i < nums.size(); i++)
+	{
+		if (rightSum == leftSum)
+		{
+			return i;
+		}
+		else
+		{
+			rightSum += nums[i];
+			leftSum -= nums[i+1];
+		}
+	}
+	return -1;
+}
+
+
+
